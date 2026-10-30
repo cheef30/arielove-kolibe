@@ -18,7 +18,7 @@ const year = new Date().getFullYear();
     <div class="footer__top">
       <div>
         <p class="footer__mark">
-          <span class="font-semibold">Arielove</span> <span class="italic">kolibe</span>
+          <span>Arielove</span> <span class="italic">kolibe</span>
         </p>
         <p class="footer__former">{t.footer.former}</p>
       </div>
@@ -92,6 +92,8 @@ const year = new Date().getFullYear();
 
 <style>
   .footer {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 640px;
     background: var(--color-ink);
     color: rgb(250 246 239 / 0.9);
     padding-top: clamp(4rem, 8vw, 6rem);
@@ -138,7 +140,7 @@ const year = new Date().getFullYear();
     margin-bottom: 0.75rem;
     font-family: var(--font-sans);
     font-size: 0.8125rem;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.01em;
     color: var(--color-caramel-light);
   }

@@ -247,8 +247,16 @@ if (track) {
     },
     { passive: true },
   );
-  window.addEventListener('resize', sync);
-  sync();
+  // merenje tek kada se utisci približe ekranu, da ne usporava učitavanje
+  new IntersectionObserver(
+    ([entry], obs) => {
+      if (!entry.isIntersecting) return;
+      obs.disconnect();
+      window.addEventListener('resize', sync);
+      sync();
+    },
+    { rootMargin: '400px 0px' },
+  ).observe(track);
 }
 });
 

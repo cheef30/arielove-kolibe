@@ -2,11 +2,9 @@
 
 /* Fontovi su lokalni (@fontsource), sa latinicom (č ć š đ ž) i ćirilicom, font-display: swap. */
 @import '@fontsource/cormorant-garamond/500.css';
-@import '@fontsource/cormorant-garamond/600.css';
 @import '@fontsource/cormorant-garamond/500-italic.css';
 @import '@fontsource/manrope/400.css';
 @import '@fontsource/manrope/600.css';
-@import '@fontsource/manrope/700.css';
 
 /* Rezervni fontovi podešeni na mere pravih, da se tekst ne pomera dok se fontovi učitavaju. */
 @font-face {
@@ -172,7 +170,7 @@
   .kicker__num {
     font-family: var(--font-serif);
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 500;
     font-variant-numeric: lining-nums;
   }
   .kicker__rule {
