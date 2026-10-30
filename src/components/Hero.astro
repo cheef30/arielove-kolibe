@@ -1,0 +1,287 @@
+---
+import { business, images, text, todo, type Lang } from '../content';
+import { formatNumber, telUrl, whatsappUrl } from '../lib/site';
+import Icon from './Icon.astro';
+import Img from './Img.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = text[lang];
+const r = business.ratings;
+const lat = business.geo.lat.toFixed(4);
+const lng = business.geo.lng.toFixed(4);
+const bookingNote = todo.bookingReviewCount
+  ? `${todo.bookingReviewCount} ${t.ratings.bookingReviews}`
+  : `${t.ratings.outOf} ${r.booking.best}`;
+---
+
+<section class="hero on-dark" id="top" aria-labelledby="hero-title">
+  <div class="hero__media" data-parallax>
+    <Img
+      image={images.hero}
+      lang={lang}
+      widths={[640, 960, 1280, 1600, 2000, 2400]}
+      sizes="100vw"
+      eager
+      class="hero__img"
+    />
+  </div>
+  <div class="hero__shade" aria-hidden="true"></div>
+
+  <div class="wrap hero__inner">
+    <div class="hero__aside" aria-hidden="true">
+      <span>{lat}° N</span>
+      <span class="hero__aside-rule"></span>
+      <span>{lng}° E</span>
+    </div>
+
+    <div class="hero__content">
+      <p class="hero__place hero-in" style="--d: 0ms">
+        <Icon name="map-pin" size={16} />
+        {t.hero.place}
+      </p>
+      <h1 id="hero-title" class="display-xl hero__title hero-in" style="--d: 80ms">{t.hero.title}</h1>
+      <p class="lead hero__lead hero-in" style="--d: 180ms">{t.hero.lead}</p>
+
+      <div class="hero__actions hero-in" style="--d: 260ms">
+        <a href={business.bookingUrl} target="_blank" rel="noopener" class="btn btn--cream">
+          {t.cta.booking}
+          <Icon name="arrow-up-right" size={18} class="icon-nudge" />
+          <span class="sr-only">({t.ui.newTab})</span>
+        </a>
+        <a href={whatsappUrl(lang)} target="_blank" rel="noopener" class="btn btn--glass">
+          <Icon name="message-circle" size={18} />
+          {t.cta.whatsappLong}
+          <span class="sr-only">({t.ui.newTab})</span>
+        </a>
+      </div>
+      <p class="hero__minor hero-in" style="--d: 320ms">
+        <span>
+          {t.cta.orCall}{' '}
+          <a href={telUrl} class="text-link font-semibold whitespace-nowrap">{business.phoneDisplay}</a>
+        </span>
+        <a href={business.airbnbUrl} target="_blank" rel="noopener" class="text-link">
+          {t.cta.airbnb}<span class="sr-only"> ({t.ui.newTab})</span>
+        </a>
+      </p>
+    </div>
+
+    <ul class="hero__ratings hero-in" style="--d: 420ms" aria-label={t.ratings.label}>
+      <li>
+        <span class="rating__value">{formatNumber(r.google.value, lang)}</span>
+        <span class="rating__meta">
+          <span class="rating__name">{t.ratings.google}</span>
+          <span class="rating__note">{t.ratings.googleNote}</span>
+        </span>
+      </li>
+      <li>
+        <span class="rating__value">{formatNumber(r.booking.value, lang)}</span>
+        <span class="rating__meta">
+          <span class="rating__name">{t.ratings.booking}</span>
+          <span class="rating__note">{bookingNote}</span>
+        </span>
+      </li>
+      <li>
+        <span class="rating__value">{formatNumber(r.airbnb.value, lang, 2)}</span>
+        <span class="rating__meta">
+          <span class="rating__name">{t.ratings.airbnb}</span>
+          <span class="rating__note">{t.ratings.guestFavorite}</span>
+        </span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: flex;
+    min-height: 85svh;
+    overflow: hidden;
+    background: var(--color-forest-deep);
+    color: var(--color-paper);
+    isolation: isolate;
+  }
+  @media (min-width: 768px) {
+    .hero {
+      min-height: max(100svh, 40rem);
+    }
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: -6% 0 -6% 0;
+    z-index: -2;
+    will-change: transform;
+  }
+  .hero__media :global(picture),
+  .hero__media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(to top, rgb(12 20 15 / 0.88) 0%, rgb(12 20 15 / 0.55) 38%, rgb(12 20 15 / 0.08) 70%),
+      linear-gradient(to right, rgb(12 20 15 / 0.55) 0%, rgb(12 20 15 / 0) 60%);
+  }
+
+  .hero__inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-top: calc(var(--header-h) + 3rem);
+    padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .hero__aside {
+    position: absolute;
+    right: var(--gutter);
+    top: 50%;
+    display: none;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.78;
+    writing-mode: vertical-rl;
+    transform: translateY(-50%);
+  }
+  .hero__aside-rule {
+    width: 1px;
+    height: 3.5rem;
+    background: currentColor;
+    opacity: 0.6;
+  }
+  @media (min-width: 1024px) {
+    .hero__aside {
+      display: flex;
+    }
+  }
+
+  .hero__content {
+    max-width: 52rem;
+  }
+  .hero__place {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: rgb(250 246 239 / 0.9);
+  }
+  .hero__title {
+    max-width: 11ch;
+    text-wrap: wrap;
+    text-shadow: 0 2px 30px rgb(0 0 0 / 0.25);
+  }
+  .hero__lead {
+    max-width: 36rem;
+    margin-top: 1.5rem;
+    color: rgb(250 246 239 / 0.9);
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+  .hero__minor {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.5rem;
+    margin-top: 1.1rem;
+    font-size: 0.9375rem;
+    color: rgb(250 246 239 / 0.86);
+  }
+  .hero__minor a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .hero__ratings {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: clamp(2rem, 5vw, 3.75rem);
+    padding-top: 1.25rem;
+    border-top: 1px solid rgb(250 246 239 / 0.28);
+  }
+  .hero__ratings li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .rating__value {
+    font-family: var(--font-serif);
+    font-size: clamp(1.9rem, 1.4rem + 1.6vw, 2.75rem);
+    font-weight: 500;
+    line-height: 1;
+    font-variant-numeric: lining-nums;
+  }
+  .rating__meta {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8125rem;
+    line-height: 1.35;
+  }
+  .rating__name {
+    font-weight: 600;
+  }
+  .rating__note {
+    color: rgb(250 246 239 / 0.8);
+  }
+  @media (min-width: 768px) {
+    .hero__ratings {
+      display: flex;
+      gap: clamp(2rem, 5vw, 4.5rem);
+    }
+    .hero__ratings li {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.875rem;
+    }
+    .rating__meta {
+      font-size: 0.875rem;
+    }
+  }
+
+  @media (max-width: 479px) {
+    .hero__actions .btn {
+      width: 100%;
+    }
+  }
+
+  /* Jedan usklađen ulaz pri učitavanju */
+  @keyframes hero-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 18px, 0);
+    }
+  }
+  .hero-in {
+    animation: hero-in 1.1s var(--ease-out-soft) both;
+    animation-delay: var(--d, 0ms);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-in {
+      animation: none;
+    }
+    .hero__media {
+      will-change: auto;
+    }
+  }
+</style>

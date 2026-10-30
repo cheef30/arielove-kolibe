@@ -1,0 +1,80 @@
+---
+import AirVent from '@lucide/astro/icons/air-vent';
+import Armchair from '@lucide/astro/icons/armchair';
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import Baby from '@lucide/astro/icons/baby';
+import BedDouble from '@lucide/astro/icons/bed-double';
+import Car from '@lucide/astro/icons/car';
+import ChevronLeft from '@lucide/astro/icons/chevron-left';
+import ChevronRight from '@lucide/astro/icons/chevron-right';
+import CigaretteOff from '@lucide/astro/icons/cigarette-off';
+import CookingPot from '@lucide/astro/icons/cooking-pot';
+import Flame from '@lucide/astro/icons/flame';
+import HandHeart from '@lucide/astro/icons/hand-heart';
+import Languages from '@lucide/astro/icons/languages';
+import LogIn from '@lucide/astro/icons/log-in';
+import LogOut from '@lucide/astro/icons/log-out';
+import MapPin from '@lucide/astro/icons/map-pin';
+import Maximize2 from '@lucide/astro/icons/maximize-2';
+import Menu from '@lucide/astro/icons/menu';
+import MessageCircle from '@lucide/astro/icons/message-circle';
+import PawPrint from '@lucide/astro/icons/paw-print';
+import Phone from '@lucide/astro/icons/phone';
+import Sofa from '@lucide/astro/icons/sofa';
+import Sparkles from '@lucide/astro/icons/sparkles';
+import Star from '@lucide/astro/icons/star';
+import TrainFront from '@lucide/astro/icons/train-front';
+import Trees from '@lucide/astro/icons/trees';
+import Users from '@lucide/astro/icons/users';
+import Wifi from '@lucide/astro/icons/wifi';
+import Wine from '@lucide/astro/icons/wine';
+import X from '@lucide/astro/icons/x';
+
+const icons = {
+  'air-vent': AirVent,
+  armchair: Armchair,
+  'arrow-up-right': ArrowUpRight,
+  baby: Baby,
+  'bed-double': BedDouble,
+  car: Car,
+  'chevron-left': ChevronLeft,
+  'chevron-right': ChevronRight,
+  'cigarette-off': CigaretteOff,
+  'cooking-pot': CookingPot,
+  flame: Flame,
+  'hand-heart': HandHeart,
+  languages: Languages,
+  'log-in': LogIn,
+  'log-out': LogOut,
+  'map-pin': MapPin,
+  'maximize-2': Maximize2,
+  menu: Menu,
+  'message-circle': MessageCircle,
+  'paw-print': PawPrint,
+  phone: Phone,
+  sofa: Sofa,
+  sparkles: Sparkles,
+  star: Star,
+  'train-front': TrainFront,
+  trees: Trees,
+  users: Users,
+  wifi: Wifi,
+  wine: Wine,
+  x: X,
+};
+
+export type IconKey = keyof typeof icons;
+
+interface Props {
+  name: IconKey;
+  size?: number;
+  strokeWidth?: number;
+  class?: string;
+  fill?: string;
+}
+
+const { name, size = 20, strokeWidth = 1.6, class: className, fill = 'none' } = Astro.props;
+const Cmp = icons[name];
+---
+
+<Cmp size={size} stroke-width={strokeWidth} class={className} fill={fill} aria-hidden="true" focusable="false" />

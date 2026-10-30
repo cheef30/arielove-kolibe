@@ -1,0 +1,121 @@
+---
+import { business, images, text, type Lang } from '../content';
+import { telUrl, whatsappUrl } from '../lib/site';
+import Icon from './Icon.astro';
+import Img from './Img.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = text[lang];
+---
+
+<section id="rezervacija" class="final on-dark" aria-labelledby="final-title">
+  <div class="final__media">
+    <Img image={images.final} lang={lang} widths={[640, 960, 1400, 1920, 2400]} sizes="100vw" />
+  </div>
+  <div class="final__shade" aria-hidden="true"></div>
+
+  <div class="wrap final__inner">
+    <h2 id="final-title" class="display-xl final__title" data-reveal>{t.final.title}</h2>
+    <p class="lead final__text" data-reveal style="--reveal-delay: 100ms">{t.final.text}</p>
+    <div class="final__actions" data-reveal style="--reveal-delay: 180ms">
+      <a href={business.bookingUrl} target="_blank" rel="noopener" class="btn btn--cream">
+        {t.cta.booking}
+        <Icon name="arrow-up-right" size={18} class="icon-nudge" />
+        <span class="sr-only">({t.ui.newTab})</span>
+      </a>
+      <a href={whatsappUrl(lang)} target="_blank" rel="noopener" class="btn btn--glass">
+        <Icon name="message-circle" size={18} />
+        {t.cta.whatsappLong}
+        <span class="sr-only">({t.ui.newTab})</span>
+      </a>
+      <a href={telUrl} class="btn btn--glass">
+        <Icon name="phone" size={18} />
+        {t.cta.call}
+        <span class="final__phone">{business.phoneDisplay}</span>
+      </a>
+    </div>
+    <p class="final__minor" data-reveal style="--reveal-delay: 240ms">
+      <a href={business.airbnbUrl} target="_blank" rel="noopener" class="text-link">
+        {t.cta.airbnb}<span class="sr-only"> ({t.ui.newTab})</span>
+      </a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .final {
+    position: relative;
+    display: flex;
+    min-height: min(92svh, 56rem);
+    overflow: hidden;
+    color: var(--color-paper);
+    background: var(--color-forest-deep);
+    isolation: isolate;
+  }
+  .final__media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .final__media :global(picture),
+  .final__media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .final__shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(to top, rgb(12 20 15 / 0.9) 0%, rgb(12 20 15 / 0.5) 45%, rgb(12 20 15 / 0.25) 100%);
+  }
+  .final__inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-block: clamp(6rem, 12vw, 9rem) clamp(3.5rem, 8vw, 6rem);
+  }
+  .final__title {
+    max-width: 12ch;
+    font-style: italic;
+  }
+  .final__text {
+    max-width: 34rem;
+    margin-top: 1.5rem;
+    color: rgb(250 246 239 / 0.88);
+  }
+  .final__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2.25rem;
+  }
+  .final__phone {
+    font-weight: 500;
+    opacity: 0.85;
+  }
+  @media (max-width: 479px) {
+    .final__actions .btn {
+      width: 100%;
+    }
+    .final__phone {
+      display: none;
+    }
+  }
+  .final__minor {
+    margin-top: 0.75rem;
+    font-size: 0.9375rem;
+    color: rgb(250 246 239 / 0.86);
+  }
+  .final__minor a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+</style>

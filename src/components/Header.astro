@@ -1,0 +1,333 @@
+---
+import { LANGS, business, languages, text, type Lang } from '../content';
+import { pathFor, telUrl } from '../lib/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = text[lang];
+const nav = [
+  { href: '#kolibe', label: t.nav.cabins },
+  { href: '#galerija', label: t.nav.gallery },
+  { href: '#utisci', label: t.nav.reviews },
+  { href: '#mokra-gora', label: t.nav.region },
+  { href: '#lokacija', label: t.nav.location },
+];
+---
+
+<header id="site-header" class="site-header" data-state="top">
+  <div class="wrap flex h-(--header-h) items-center justify-between gap-6">
+    <a href={pathFor(lang)} class="wordmark" aria-label={t.ui.home}>
+      <span class="wordmark__a">Arielove</span>
+      <span class="wordmark__b">kolibe</span>
+    </a>
+
+    <nav class="hidden xl:block" aria-label={t.ui.menu}>
+      <ul class="flex items-center gap-8">
+        {nav.map((item) => (
+          <li>
+            <a class="nav-link" href={item.href}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2 sm:gap-4">
+      <ul class="lang-switch hidden sm:flex" aria-label={t.ui.language}>
+        {LANGS.map((l) => (
+          <li>
+            <a
+              href={pathFor(l)}
+              hreflang={languages[l].hreflang}
+              lang={languages[l].htmlLang}
+              aria-current={l === lang ? 'true' : undefined}
+              title={languages[l].name}
+            >
+              {languages[l].label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a href={telUrl} class="header-phone hidden lg:inline-flex">
+        <Icon name="phone" size={17} />
+        <span class="hidden 2xl:inline">{business.phoneDisplay}</span>
+        <span class="2xl:hidden">{t.cta.call}</span>
+      </a>
+      <a
+        href={business.bookingUrl}
+        target="_blank"
+        rel="noopener"
+        class="btn header-book hidden lg:inline-flex"
+      >
+        {t.cta.bookingShort}
+        <Icon name="arrow-up-right" size={17} class="icon-nudge" />
+        <span class="sr-only">({t.ui.newTab})</span>
+      </a>
+      <button
+        type="button"
+        class="menu-btn xl:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <span class="menu-btn__open"><Icon name="menu" size={22} /></span>
+        <span class="menu-btn__close"><Icon name="x" size={22} /></span>
+        <span class="sr-only" data-label-open={t.ui.menu} data-label-close={t.ui.closeMenu}>{t.ui.menu}</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="mobile-menu xl:hidden" hidden>
+    <div class="wrap flex min-h-full flex-col pb-10 pt-6">
+      <nav aria-label={t.ui.menu}>
+        <ul class="flex flex-col">
+          {nav.map((item, i) => (
+            <li class="border-b border-ink/10">
+              <a class="mobile-menu__link" href={item.href} data-menu-link>
+                <span class="mobile-menu__num">{String(i + 1).padStart(2, '0')}</span>
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div class="mt-auto pt-10">
+        <ul class="lang-switch lang-switch--menu mb-6 flex" aria-label={t.ui.language}>
+          {LANGS.map((l) => (
+            <li>
+              <a
+                href={pathFor(l)}
+                hreflang={languages[l].hreflang}
+                lang={languages[l].htmlLang}
+                aria-current={l === lang ? 'true' : undefined}
+              >
+                {languages[l].name}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div class="grid gap-3 sm:grid-cols-2">
+          <a href={telUrl} class="btn btn--line">
+            <Icon name="phone" size={18} />
+            {business.phoneDisplay}
+          </a>
+          <a href={business.bookingUrl} target="_blank" rel="noopener" class="btn btn--forest">
+            {t.cta.booking}
+            <Icon name="arrow-up-right" size={18} class="icon-nudge" />
+            <span class="sr-only">({t.ui.newTab})</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    color: var(--color-paper);
+    transition:
+      background-color 0.45s var(--ease-out-soft),
+      color 0.45s var(--ease-out-soft),
+      box-shadow 0.45s var(--ease-out-soft),
+      transform 0.45s var(--ease-out-soft);
+  }
+  .site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 -2.5rem 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgb(12 20 15 / 0.45), transparent);
+    transition: opacity 0.45s;
+  }
+  .site-header[data-state='scrolled'],
+  .site-header[data-menu='open'] {
+    color: var(--color-ink);
+    background: rgb(242 236 225 / 0.86);
+    backdrop-filter: saturate(1.4) blur(14px);
+    -webkit-backdrop-filter: saturate(1.4) blur(14px);
+    box-shadow: 0 1px 0 rgb(27 23 20 / 0.08);
+  }
+  .site-header[data-state='scrolled']::before,
+  .site-header[data-menu='open']::before {
+    opacity: 0;
+  }
+  .site-header[data-menu='open'] {
+    background: var(--color-cream);
+  }
+
+  .wordmark {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35em;
+    min-height: 44px;
+    align-items: center;
+    font-family: var(--font-serif);
+    font-size: clamp(1.45rem, 1.2rem + 0.8vw, 1.75rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .wordmark__a {
+    font-weight: 600;
+  }
+  .wordmark__b {
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  .nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.6rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.45s var(--ease-out-soft);
+  }
+  .nav-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .lang-switch {
+    align-items: center;
+    gap: 0.125rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .lang-switch a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 999px;
+    opacity: 0.72;
+    transition:
+      opacity 0.25s,
+      background-color 0.25s;
+  }
+  .lang-switch a:hover {
+    opacity: 1;
+  }
+  .lang-switch a[aria-current='true'] {
+    opacity: 1;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.45em;
+  }
+  .lang-switch--menu {
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    letter-spacing: 0;
+  }
+  .lang-switch--menu a {
+    padding-inline: 1rem;
+    border: 1px solid rgb(27 23 20 / 0.16);
+    opacity: 1;
+  }
+  .lang-switch--menu a[aria-current='true'] {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-paper);
+    text-decoration: none;
+  }
+
+  .header-phone {
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding-inline: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  .header-book {
+    min-height: 2.875rem;
+    padding-inline: 1.25rem;
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+  .header-book:hover {
+    background: #fff;
+  }
+  .site-header[data-state='scrolled'] .header-book {
+    background: var(--color-forest);
+    color: var(--color-paper);
+  }
+  .site-header[data-state='scrolled'] .header-book:hover {
+    background: var(--color-forest-deep);
+  }
+
+  .menu-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 2.875rem;
+    height: 2.875rem;
+    margin-right: -0.4rem;
+    border-radius: 999px;
+    border: 1px solid currentColor;
+    border-color: color-mix(in srgb, currentColor 35%, transparent);
+  }
+  @media (min-width: 1280px) {
+    .menu-btn {
+      display: none;
+    }
+  }
+  .menu-btn > span:not(.sr-only) {
+    grid-area: 1 / 1;
+  }
+  .menu-btn__close,
+  .menu-btn[aria-expanded='true'] .menu-btn__open {
+    display: none;
+  }
+  .menu-btn[aria-expanded='true'] .menu-btn__close {
+    display: block;
+  }
+
+  .mobile-menu {
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--color-cream);
+    color: var(--color-ink);
+  }
+  .mobile-menu__link {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 0.95rem;
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 8vw, 2.75rem);
+    font-weight: 500;
+    line-height: 1.1;
+  }
+  .mobile-menu__num {
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-caramel-deep);
+    font-variant-numeric: tabular-nums;
+  }
+</style>

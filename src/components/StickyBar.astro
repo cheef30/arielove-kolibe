@@ -1,0 +1,81 @@
+---
+import { business, text, type Lang } from '../content';
+import { telUrl, whatsappUrl } from '../lib/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = text[lang];
+---
+
+<div class="sticky-bar on-dark" data-sticky-bar inert>
+  <a href={telUrl} class="sticky-bar__btn">
+    <Icon name="phone" size={19} />
+    <span>{t.cta.call}</span>
+  </a>
+  <a href={whatsappUrl(lang)} target="_blank" rel="noopener" class="sticky-bar__btn">
+    <Icon name="message-circle" size={19} />
+    <span>{t.cta.whatsapp}</span>
+  </a>
+  <a
+    href={business.bookingUrl}
+    target="_blank"
+    rel="noopener"
+    class="sticky-bar__btn sticky-bar__btn--main"
+   
+  >
+    <span>{t.cta.bookingShort}</span>
+    <Icon name="arrow-up-right" size={18} />
+  </a>
+</div>
+
+<style>
+  .sticky-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.15fr;
+    gap: 0.5rem;
+    padding: 0.625rem max(0.75rem, env(safe-area-inset-right)) calc(0.625rem + env(safe-area-inset-bottom))
+      max(0.75rem, env(safe-area-inset-left));
+    background: rgb(19 34 25 / 0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid rgb(250 246 239 / 0.1);
+    color: var(--color-paper);
+    transform: translateY(110%);
+    transition: transform 0.5s var(--ease-out-soft);
+  }
+  .sticky-bar.is-visible {
+    transform: none;
+  }
+  @media (min-width: 1024px) {
+    .sticky-bar {
+      display: none;
+    }
+  }
+  .sticky-bar__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 3rem;
+    padding-inline: 0.5rem;
+    border-radius: 999px;
+    border: 1px solid rgb(250 246 239 / 0.28);
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .sticky-bar__btn--main {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    border-color: var(--color-paper);
+  }
+</style>

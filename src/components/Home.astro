@@ -1,0 +1,43 @@
+---
+import type { Lang } from '../content';
+import { text } from '../content';
+import Base from '../layouts/Base.astro';
+import Cabins from './Cabins.astro';
+import FinalCta from './FinalCta.astro';
+import Footer from './Footer.astro';
+import Gallery from './Gallery.astro';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import Info from './Info.astro';
+import Location from './Location.astro';
+import Region from './Region.astro';
+import Reviews from './Reviews.astro';
+import StickyBar from './StickyBar.astro';
+import Welcome from './Welcome.astro';
+import Why from './Why.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<Base lang={lang}>
+  <a href="#sadrzaj" class="skip-link">{text[lang].ui.skip}</a>
+  <Header lang={lang} />
+  <main id="sadrzaj" tabindex="-1">
+    <Hero lang={lang} />
+    <Welcome lang={lang} />
+    <Cabins lang={lang} />
+    <Why lang={lang} />
+    <Gallery lang={lang} />
+    <Reviews lang={lang} />
+    <Region lang={lang} />
+    <Info lang={lang} />
+    <Location lang={lang} />
+    <FinalCta lang={lang} />
+  </main>
+  <Footer lang={lang} />
+  <StickyBar lang={lang} />
+</Base>

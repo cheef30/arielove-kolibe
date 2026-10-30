@@ -1,0 +1,22 @@
+---
+interface Props {
+  num: string;
+  label: string;
+  title: string;
+  id: string;
+  class?: string;
+  titleClass?: string;
+}
+
+const { num, label, title, id, class: className, titleClass = 'display-lg' } = Astro.props;
+---
+
+<div class={className} data-reveal>
+  <p class="kicker">
+    <span class="kicker__num">{num}</span>
+    <span class="kicker__rule" aria-hidden="true"></span>
+    <span>{label}</span>
+  </p>
+  <h2 id={id} class:list={[titleClass, 'mt-5']}>{title}</h2>
+  <slot />
+</div>

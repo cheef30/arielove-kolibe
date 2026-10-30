@@ -1,0 +1,26 @@
+{
+  "name": "arielove-kolibe",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sajt vizit karta za Arielove kolibe, Mokra Gora",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/manrope": "^5.3.0",
+    "@lucide/astro": "^1.64.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.4.4",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.3.3"
+  },
+  "engines": {
+    "node": ">=22.23.4"
+  }
+}

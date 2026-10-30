@@ -1,0 +1,120 @@
+---
+import '../styles/global.css';
+import { LANGS, business, languages, text, todo, type Lang } from '../content';
+import { absoluteUrl, basePath, pathFor } from '../lib/site';
+import cormorantLatin from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2?url';
+import cormorantCyrillic from '@fontsource/cormorant-garamond/files/cormorant-garamond-cyrillic-500-normal.woff2?url';
+import manropeLatin from '@fontsource/manrope/files/manrope-latin-400-normal.woff2?url';
+import manropeCyrillic from '@fontsource/manrope/files/manrope-cyrillic-400-normal.woff2?url';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = text[lang];
+const site = Astro.site;
+const canonical = absoluteUrl(pathFor(lang), site);
+const ogImage = absoluteUrl(`${basePath}og/og-${lang}.jpg`, site);
+
+/* Fontovi koji su potrebni za prvi ekran, po jeziku */
+const preloadFonts = lang === 'ru' ? [cormorantCyrillic, manropeCyrillic] : [cormorantLatin, manropeLatin];
+
+const amenities = [
+  'Air conditioning',
+  'Free WiFi',
+  'Kitchenette',
+  'Refrigerator',
+  'Barbecue grill',
+  'Terrace',
+  'Balcony',
+  'Garden',
+  'Outdoor dining area',
+  'Private entrance',
+  'Satellite TV',
+  'Soundproofing',
+  'Shower',
+  'Hairdryer',
+  'Towels',
+  'Toiletries',
+  'Free private parking',
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'LodgingBusiness',
+  '@id': `${absoluteUrl(basePath, site)}#lodging`,
+  name: business.name,
+  alternateName: business.formerName,
+  description: t.meta.description,
+  url: canonical,
+  image: ogImage,
+  telephone: business.phone,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: business.address.street,
+    postalCode: business.address.postalCode,
+    addressLocality: business.address.locality,
+    addressCountry: business.address.countryCode,
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: business.geo.lat, longitude: business.geo.lng },
+  hasMap: business.mapsUrl,
+  checkinTime: business.checkIn.from,
+  checkoutTime: business.checkOut.to,
+  petsAllowed: false,
+  knowsLanguage: business.hostLanguages,
+  amenityFeature: amenities.map((name) => ({ '@type': 'LocationFeatureSpecification', name, value: true })),
+  containsPlace: (['small', 'large'] as const).map((key) => ({
+    '@type': 'Accommodation',
+    name: t.cabins.items[key].name,
+    floorSize: { '@type': 'QuantitativeValue', value: business.cabins[key].size, unitCode: 'MTK' },
+    occupancy: { '@type': 'QuantitativeValue', maxValue: business.cabins[key].guests },
+  })),
+  sameAs: [business.bookingUrl, business.airbnbUrl, ...(todo.instagram ? [todo.instagram] : [])],
+};
+---
+
+<!doctype html>
+<html lang={languages[lang].htmlLang} dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{t.meta.title}</title>
+    <meta name="description" content={t.meta.description} />
+    <link rel="canonical" href={canonical} />
+    {LANGS.map((l) => <link rel="alternate" hreflang={languages[l].hreflang} href={absoluteUrl(pathFor(l), site)} />)}
+    <link rel="alternate" hreflang="x-default" href={absoluteUrl(pathFor('sr'), site)} />
+
+    <meta name="theme-color" content="#1f3a2c" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href={`${basePath}favicon.svg`} type="image/svg+xml" />
+    <link rel="icon" href={`${basePath}favicon-32.png`} sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href={`${basePath}apple-touch-icon.png`} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={business.name} />
+    <meta property="og:title" content={t.meta.title} />
+    <meta property="og:description" content={t.meta.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={t.meta.ogAlt} />
+    <meta property="og:locale" content={languages[lang].ogLocale} />
+    {LANGS.filter((l) => l !== lang).map((l) => <meta property="og:locale:alternate" content={languages[l].ogLocale} />)}
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {preloadFonts.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
+
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <slot />
+    <script>
+      import '../scripts/site.ts';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,335 @@
+---
+import { business, images, text, todo, type Lang } from '../content';
+import Icon from './Icon.astro';
+import Img from './Img.astro';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = text[lang].cabins;
+const currency = { EUR: '€', RSD: 'RSD' };
+
+const cabins = [
+  { key: 'small' as const, image: images.cabinSmall },
+  { key: 'large' as const, image: images.cabinLarge },
+];
+---
+
+<section id="kolibe" class="section" aria-labelledby="cabins-title">
+  <div class="wrap">
+    <div class="cabins__head">
+      <SectionHead num="02" label={t.label} title={t.title} id="cabins-title" titleClass="display-lg max-w-[17ch]" />
+      <p class="lead text-ink-soft cabins__intro" data-reveal style="--reveal-delay: 120ms">{t.intro}</p>
+    </div>
+
+    <div class="cabins__grid">
+      {
+        cabins.map(({ key, image }, i) => {
+          const item = t.items[key];
+          const data = business.cabins[key];
+          const price = todo.prices?.[key];
+          return (
+            <article class:list={['cabin', `cabin--${key}`]} data-reveal style={`--reveal-delay:${i * 120}ms`} aria-labelledby={`cabin-${key}`}>
+              <div class="frame cabin__img">
+                <Img image={image} lang={lang} widths={[480, 720, 960, 1280]} sizes="(min-width: 1024px) 44vw, 92vw" />
+                {price && todo.prices && (
+                  <p class="cabin__price">
+                    {t.priceFrom} <strong>{price} {currency[todo.prices.currency]}</strong> {t.perNight}
+                  </p>
+                )}
+              </div>
+
+              <div class="cabin__body">
+                <h3 id={`cabin-${key}`} class="cabin__name">{item.name}</h3>
+
+                <dl class="cabin__stats">
+                  <div>
+                    <dt>{t.sizeLabel}</dt>
+                    <dd>
+                      <span class="cabin__num">{data.size}</span> m²
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>{t.guestsLabel}</dt>
+                    <dd>
+                      <span class="cabin__num-prefix">{t.upTo}</span>
+                      <span class="cabin__num">{data.guests}</span>
+                      <Icon name="users" size={20} class="cabin__users" />
+                    </dd>
+                  </div>
+                </dl>
+
+                <h4 class="cabin__sub">{t.bedsLabel}</h4>
+                <ul class="cabin__beds">
+                  {item.beds.map((b) => (
+                    <li>
+                      <Icon name={/kauč|sofa|диван/i.test(b) ? 'sofa' : 'bed-double'} size={18} />
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <ul class="cabin__amenities">
+                  {t.highlights.map((h) => (
+                    <li>
+                      <Icon name={h.icon} size={20} />
+                      <span>{h.label}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+
+    <div class="together" data-reveal>
+      <p class="together__num" aria-hidden="true">{business.cabins.totalGuests}</p>
+      <p class="together__text">{t.together}</p>
+    </div>
+
+    <div class="every" data-reveal>
+      <h3 class="every__title">{t.everyTitle}</h3>
+      <div class="every__grid">
+        {
+          t.every.map((group) => (
+            <div>
+              <h4 class="every__group">{group.title}</h4>
+              <ul>
+                {group.items.map((it) => (
+                  <li>{it}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cabins__head {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 1024px) {
+    .cabins__head {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+      align-items: end;
+      gap: 4rem;
+    }
+    .cabins__intro {
+      padding-bottom: 0.5rem;
+    }
+  }
+
+  .cabins__grid {
+    display: grid;
+    gap: clamp(3.5rem, 7vw, 5rem);
+    margin-top: clamp(3rem, 7vw, 5.5rem);
+  }
+  @media (min-width: 900px) {
+    .cabins__grid {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      align-items: start;
+      gap: clamp(2rem, 4vw, 4rem);
+    }
+    .cabin--large {
+      margin-top: clamp(4rem, 9vw, 8rem);
+    }
+  }
+
+  .cabin__img {
+    aspect-ratio: 4 / 5;
+  }
+  .cabin--large .cabin__img {
+    aspect-ratio: 5 / 6;
+  }
+  .cabin__price {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    background: rgb(250 246 239 / 0.94);
+    font-size: 0.875rem;
+  }
+
+  .cabin__body {
+    padding-top: 1.75rem;
+  }
+  .cabin__name {
+    font-size: clamp(2.2rem, 1.7rem + 1.8vw, 3.2rem);
+  }
+
+  .cabin__stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 1.5rem;
+    border-block: 1px solid rgb(27 23 20 / 0.14);
+  }
+  .cabin__stats > div {
+    padding-block: 1rem;
+  }
+  .cabin__stats > div + div {
+    padding-left: 1.25rem;
+    border-left: 1px solid rgb(27 23 20 / 0.14);
+  }
+  .cabin__stats dt {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+  }
+  .cabin__stats dd {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    margin-top: 0.25rem;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    font-weight: 500;
+  }
+  .cabin__num {
+    font-size: clamp(2.6rem, 2rem + 2vw, 3.5rem);
+    line-height: 1;
+    font-variant-numeric: lining-nums;
+  }
+  .cabin__num-prefix {
+    font-size: 1.35rem;
+  }
+  .cabin__stats :global(.cabin__users) {
+    align-self: center;
+    margin-left: 0.25rem;
+    color: var(--color-caramel-deep);
+  }
+
+  .cabin__sub {
+    margin-top: 1.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+  }
+  .cabin__beds {
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+  }
+  .cabin__beds li {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  .cabin__beds :global(svg) {
+    flex: none;
+    margin-top: 0.25rem;
+    color: var(--color-caramel-deep);
+  }
+
+  .cabin__amenities {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+  }
+  @media (min-width: 560px) {
+    .cabin__amenities {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .cabin__amenities li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 0.875rem;
+    background: var(--color-paper);
+    border: 1px solid rgb(27 23 20 / 0.08);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25;
+    transition:
+      border-color 0.3s,
+      transform 0.3s var(--ease-out-soft);
+  }
+  .cabin__amenities li:hover {
+    border-color: rgb(138 85 39 / 0.45);
+    transform: translateY(-2px);
+  }
+  .cabin__amenities :global(svg) {
+    flex: none;
+    color: var(--color-forest);
+  }
+
+  .together {
+    display: grid;
+    align-items: center;
+    gap: 0.5rem 2rem;
+    margin-top: clamp(4rem, 9vw, 7rem);
+    padding-block: 2rem;
+    border-block: 1px solid rgb(27 23 20 / 0.14);
+  }
+  @media (min-width: 768px) {
+    .together {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+  }
+  .together__num {
+    font-family: var(--font-serif);
+    font-size: clamp(5rem, 3rem + 7vw, 9rem);
+    font-weight: 500;
+    line-height: 0.85;
+    color: var(--color-caramel-deep);
+    font-variant-numeric: lining-nums;
+  }
+  .together__text {
+    max-width: 30ch;
+    font-family: var(--font-serif);
+    font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem);
+    font-weight: 500;
+    line-height: 1.15;
+  }
+
+  .every {
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    padding: clamp(1.75rem, 4vw, 3rem);
+    border-radius: var(--radius-lg);
+    background: var(--color-paper);
+    box-shadow: var(--shadow-soft);
+  }
+  .every__title {
+    font-size: clamp(1.9rem, 1.5rem + 1.2vw, 2.6rem);
+  }
+  .every__grid {
+    display: grid;
+    gap: 1.75rem 2.5rem;
+    margin-top: 1.75rem;
+  }
+  @media (min-width: 640px) {
+    .every__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .every__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .every__group {
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid rgb(27 23 20 / 0.14);
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-caramel-deep);
+  }
+  .every li {
+    padding-block: 0.3rem;
+    font-size: 0.975rem;
+  }
+</style>

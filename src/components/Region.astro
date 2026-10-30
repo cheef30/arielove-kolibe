@@ -1,0 +1,150 @@
+---
+import { images, text, type Lang } from '../content';
+import Img from './Img.astro';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = text[lang].region;
+const items = [
+  { key: 'sargan' as const, image: images.sargan },
+  { key: 'drvengrad' as const, image: images.drvengrad },
+  { key: 'tara' as const, image: images.tara },
+];
+---
+
+<section id="mokra-gora" class="section region on-dark" aria-labelledby="region-title">
+  <div class="wrap">
+    <div class="region__head">
+      <SectionHead num="06" label={t.label} title={t.title} id="region-title" titleClass="display-lg max-w-[12ch]" />
+      <p class="lead region__intro" data-reveal style="--reveal-delay: 120ms">{t.intro}</p>
+    </div>
+
+    <div class="region__list">
+      {
+        items.map(({ key, image }, i) => {
+          const item = t.items[key];
+          return (
+            <article class:list={['place', `place--${key}`]} aria-labelledby={`place-${key}`}>
+              <div class="frame place__img" data-reveal>
+                <Img
+                  image={image}
+                  lang={lang}
+                  widths={i === 0 ? [560, 800, 1100, 1500] : [420, 640, 900]}
+                  sizes={i === 0 ? '(min-width: 1024px) 58vw, 92vw' : '(min-width: 1024px) 26vw, 92vw'}
+                />
+              </div>
+              <div class="place__text" data-reveal style="--reveal-delay: 120ms">
+                <p class="place__note">{item.note}</p>
+                <h3 id={`place-${key}`} class="place__title">
+                  {item.title}
+                </h3>
+                <p class="place__body">{item.text}</p>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .region {
+    background: var(--color-forest-deep);
+    color: var(--color-paper);
+  }
+  .region__head {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (min-width: 1024px) {
+    .region__head {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+      align-items: end;
+      gap: 4rem;
+    }
+  }
+  .region__intro {
+    max-width: 34rem;
+    color: rgb(250 246 239 / 0.8);
+  }
+
+  .region__list {
+    display: grid;
+    gap: clamp(3.5rem, 7vw, 5rem);
+    margin-top: clamp(3rem, 7vw, 5.5rem);
+  }
+
+  .place__img {
+    aspect-ratio: 4 / 3;
+    box-shadow: 0 40px 80px -40px rgb(0 0 0 / 0.75);
+  }
+  .place--tara .place__img,
+  .place--drvengrad .place__img {
+    aspect-ratio: 4 / 3;
+  }
+  .place__text {
+    margin-top: 1.5rem;
+    max-width: 30rem;
+  }
+  .place__note {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-caramel-light);
+  }
+  .place__note::before {
+    content: '';
+    width: 1.5rem;
+    height: 1px;
+    background: currentColor;
+  }
+  .place__title {
+    margin-top: 0.75rem;
+    font-size: clamp(2.1rem, 1.6rem + 1.8vw, 3.2rem);
+  }
+  .place__body {
+    margin-top: 0.875rem;
+    color: rgb(250 246 239 / 0.8);
+  }
+
+  @media (min-width: 1024px) {
+    .region__list {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: clamp(1.5rem, 3vw, 3rem);
+      row-gap: 6rem;
+    }
+    .place--sargan {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: inherit;
+      align-items: end;
+    }
+    .place--sargan .place__img {
+      grid-column: 1 / span 7;
+      aspect-ratio: 5 / 4;
+    }
+    .place--sargan .place__text {
+      grid-column: 9 / -1;
+      margin-top: 0;
+      padding-bottom: 1rem;
+    }
+    .place--drvengrad {
+      grid-column: 1 / span 6;
+    }
+    .place--tara {
+      grid-column: 8 / -1;
+      margin-top: 8rem;
+    }
+    .place--tara .place__img {
+      aspect-ratio: 4 / 5;
+    }
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+import { Picture } from 'astro:assets';
+import type { Lang, SiteImage } from '../content';
+import { imageMeta } from '../lib/site';
+
+interface Props {
+  image: SiteImage;
+  lang: Lang;
+  /** širine koje se generišu (veće od originala se preskaču) */
+  widths: number[];
+  sizes: string;
+  class?: string;
+  eager?: boolean;
+  /** prazan alt kada je slika samo ukras pored teksta koji je već opisuje */
+  decorative?: boolean;
+}
+
+const { image, lang, widths, sizes, class: className, eager = false, decorative = false } = Astro.props;
+const meta = imageMeta(image.file);
+const usable = widths.filter((w) => w <= meta.width);
+if (!usable.length) usable.push(meta.width);
+---
+
+<Picture
+  src={meta}
+  alt={decorative ? '' : image.alt[lang]}
+  widths={usable}
+  sizes={sizes}
+  formats={['avif', 'webp']}
+  quality={eager ? 62 : 58}
+  class={className}
+  loading={eager ? 'eager' : 'lazy'}
+  fetchpriority={eager ? 'high' : 'auto'}
+  decoding="async"
+  style={`object-position:${image.position ?? '50% 50%'}`}
+/>
